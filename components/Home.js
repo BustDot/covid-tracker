@@ -1,9 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, TextInput, View, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
 export default function Home() {
+    const [countryImg, setCountryImg] = useState();
+    const [data, setData] = useState();
+    const [search, setSearch] = useState('');
+    const [stats, setStats] = useState({});
+    const [Country, SetCountry] = useState('Global');
+
+    useEffect(() => {
+        fetchData()
+    }, []);
+
+    async function fetchData() {
+        let getData = await fetch('https://api.covid19api.com/summary');
+        let res = await getData.json();
+        setData(res);
+        setStats({
+            ActiveCases: res.Global.TotalConfirmed,
+            NewCases: res.Global.NewConfirmed,
+            Deaths: res.Global.NewDeaths,
+            Recovered: res.Global.NewRecovered,
+        });
+        SetCountry('Global');
+    }
+
+    function showResults() {
+        data.Countries.map((item, index)=> {
+            const {Country, CountryCode} = item;
+            let lowCountry = Country.toLowerCase();
+            if(search === lowCountry) {
+                setStats({
+                    ActiveCases: item.TotalConfirmed,
+                    NewCases: item.NewConfirmed,
+                    Deaths: item.NewDeaths,
+                    Recovered: item.NewRecovered,
+                });
+                SetCountry(Country);
+                setCountryImg(CountryCode.toLowerCase());
+            }
+        });
+        Keyboard.dismiss();
+        setSearch('');
+    }
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.container}>
@@ -11,8 +53,14 @@ export default function Home() {
                     <TextInput 
                     style={styles.input} 
                     placeholder='search country'
-                    placeholderTextColor='lightgrey' />
-                    <TouchableOpacity style={styles.searchButton}>
+                    placeholderTextColor='lightgrey'
+                    onChangeText={(text) => {
+                        let tt = text;
+                        tt = tt.toLowerCase();
+                        setSearch(tt);
+                    }}
+                    />
+                    <TouchableOpacity style={styles.searchButton} onPress={() => showResults()} >
                         <Icon name='search' color='white' size={30} />
                     </TouchableOpacity>
                 </View>
@@ -30,29 +78,30 @@ export default function Home() {
                 <View>
                     <View style={styles.countryHeading}>
                         <Image style={{width: 20, height: 20, marginRight: 10, borderRadius: 5}}
+                        source={Country === 'Global' ? null : { uri: `https://countryflagsapi.com/png/${countryImg}`}}
                         />
-                        <Text style={styles.countryName}>country</Text>
+                        <Text style={styles.countryName}>{Country}</Text>
                     </View>
 
                     <View style={styles.cards}>
                         <View style={[styles.card, {borderLeftColor: 'yellow'}]}>
                             <Text style={styles.cardText}>Active Cases</Text>
-                            <Text style={[styles.text, {color: 'yellow'}]}>Active</Text>
+                            <Text style={[styles.text, {color: 'yellow'}]}>{stats.ActiveCases}</Text>
                         </View>
 
                         <View style={[styles.card, {borderLeftColor: 'orange'}]}>
                             <Text style={styles.cardText}>New Cases</Text>
-                            <Text style={[styles.text, {color: 'orange'}]}>New</Text>
+                            <Text style={[styles.text, {color: 'orange'}]}>{stats.NewCases}</Text>
                         </View>
 
                         <View style={[styles.card, {borderLeftColor: 'red'}]}>
                             <Text style={styles.cardText}>Deaths</Text>
-                            <Text style={[styles.text, {color: 'red'}]}>Deaths</Text>
+                            <Text style={[styles.text, {color: 'red'}]}>{stats.Deaths}</Text>
                         </View>
 
                         <View style={[styles.card, {borderLeftColor: 'lightgreen'}]}>
                             <Text style={styles.cardText}>Recovered</Text>
-                            <Text style={[styles.text, {color: 'lightgreen'}]}>Recovered</Text>
+                            <Text style={[styles.text, {color: 'lightgreen'}]}>{stats.Recovered}</Text>
                         </View>
                     </View>
                 </View>
