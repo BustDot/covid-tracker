@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './components/Home';
 import Emergency from './components/Emergency';
+import Help from './components/help/help';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import * as eva from '@eva-design/eva';
 import {ApplicationProvider} from '@ui-kitten/components';
@@ -17,6 +18,10 @@ const EmergencyIcon = (props) => (
   <Icon {...props} name='thermometer-outline'/>
 );
 
+const HelpIcon = (props) => (
+  <Icon {...props} name='smiling-face-outline'/>
+);
+
 const { Navigator, Screen } = createBottomTabNavigator();
 const BottomTabBar = ({ navigation, state }) => (
   <BottomNavigation
@@ -24,6 +29,7 @@ const BottomTabBar = ({ navigation, state }) => (
     onSelect={index => navigation.navigate(state.routeNames[index])}>
     <BottomNavigationTab title='Home'  icon={HomeIcon}/>
     <BottomNavigationTab title='Emergency'  icon={EmergencyIcon}/>
+    <BottomNavigationTab title='Help'  icon={HelpIcon}/>
   </BottomNavigation>
 );
 
@@ -31,6 +37,7 @@ const TabNavigator = () => (
   <Navigator tabBar={props => <BottomTabBar {...props} />} screenOptions={{headerShown: false}}>
     <Screen name='Home' component={Home}/>
     <Screen name='Emergency' component={Emergency}/>
+    <Screen name='Help' component={Help}/>
   </Navigator>
 );
 

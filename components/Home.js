@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, TextInput, View, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import { Layout } from '@ui-kitten/components';
 
 export default function Home() {
     const [countryImg, setCountryImg] = useState();
@@ -48,7 +48,7 @@ export default function Home() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.container}>
+            <Layout style={styles.container}>
                 <View style={styles.searchContainer}>
                     <TextInput 
                     style={styles.input} 
@@ -105,7 +105,7 @@ export default function Home() {
                         </View>
                     </View>
                 </View>
-            </View>
+            </Layout>
         </TouchableWithoutFeedback>
     )
 }
