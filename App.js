@@ -9,6 +9,8 @@ import * as eva from '@eva-design/eva';
 import {ApplicationProvider} from '@ui-kitten/components';
 import { BottomNavigation, BottomNavigationTab, IconRegistry, Icon } from '@ui-kitten/components';
 import { default as theme } from './theme.json';
+import { Submit } from './components/help/submit';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const HomeIcon = (props) => (
   <Icon {...props} name='home-outline'/>
@@ -22,7 +24,9 @@ const HelpIcon = (props) => (
   <Icon {...props} name='smiling-face-outline'/>
 );
 
-const { Navigator, Screen } = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
 const BottomTabBar = ({ navigation, state }) => (
   <BottomNavigation
     selectedIndex={state.index}
@@ -34,11 +38,11 @@ const BottomTabBar = ({ navigation, state }) => (
 );
 
 const TabNavigator = () => (
-  <Navigator tabBar={props => <BottomTabBar {...props} />} screenOptions={{headerShown: false}}>
-    <Screen name='Home' component={Home}/>
-    <Screen name='Emergency' component={Emergency}/>
-    <Screen name='Help' component={Help}/>
-  </Navigator>
+  <Tab.Navigator tabBar={props => <BottomTabBar {...props} />} screenOptions={{headerShown: false}}>
+    <Tab.Screen name='Home' component={Home}/>
+    <Tab.Screen name='Emergency' component={Emergency}/>
+    <Tab.Screen name='Help' component={Help}/>
+  </Tab.Navigator>
 );
 
 
@@ -46,10 +50,14 @@ export default function App() {
     return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
-          <NavigationContainer>
-            <TabNavigator/>
-          </NavigationContainer>
+      <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="TabNavigator" screenOptions={{headerShown: false}}>
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
+            <Stack.Screen name="Help" component={Help} />
+            <Stack.Screen name="Submit" component={Submit} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </ApplicationProvider>
     </>
 

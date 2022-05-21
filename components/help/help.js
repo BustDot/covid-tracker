@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, TopNavigation, TopNavigationAction, Layout, Divider, List, ListItem } from '@ui-kitten/components';
 
-
-const EditIcon = (props) => (
-  <Icon {...props} name='edit'/>
-);
-
-export default function Help() {
+export default function Help({ navigation }) {
   const [data, setData] = useState();
   useEffect(() => {
       fetchData()
@@ -18,6 +13,14 @@ export default function Help() {
       let res = await getData.json();
       setData(res);
   }
+
+  const navigateSubmit = () => {
+    navigation.navigate('Submit');
+  };
+
+  const EditIcon = (props) => (
+    <Icon onPress={navigateSubmit} {...props} name='edit'/>
+  );
 
   const renderRightActions = () => (
     <React.Fragment>
