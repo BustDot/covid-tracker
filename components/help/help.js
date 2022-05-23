@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, TopNavigation, TopNavigationAction, Layout, Divider, List, ListItem } from '@ui-kitten/components';
 import  {DeviceEventEmitter} from 'react-native';
+import '../user.js';
 
 export default function Help({ navigation }) {
   const [data, setData] = useState();
   useEffect(() => {
+    fetchData();
+    DeviceEventEmitter.addListener("EventType", ()=>{
       fetchData();
-      DeviceEventEmitter.addListener("EventType", ()=>{
-        fetchData();
     });
   }, []);
 
@@ -19,7 +20,10 @@ export default function Help({ navigation }) {
   }
 
   const navigateSubmit = () => {
-    navigation.navigate('Submit');
+    if (isLogin)
+      navigation.navigate('Submit');
+    else
+      navigation.navigate('SignIn');
   };
 
   const EditIcon = (props) => (
