@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Icon, Input, Layout, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Divider } from '@ui-kitten/components';
+import { StyleSheet, DeviceEventEmitter } from 'react-native';
+import { Icon, Input, Layout, Select, SelectItem, IndexPath, TopNavigation, TopNavigationAction, Divider, Datepicker } from '@ui-kitten/components';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const data = [
@@ -39,6 +39,10 @@ export const Submit = ({ navigation }) => {
     </React.Fragment>
     );
 
+    const CalendarIcon = (props) => (
+      <Icon {...props} name='calendar'/>
+    );
+
   const [selectedIndex, setSelectedIndex] = React.useState(new IndexPath(0));
   const displayValue = data[selectedIndex.row];
   const renderOption = (title) => (
@@ -48,8 +52,9 @@ export const Submit = ({ navigation }) => {
   const titleInputState = useInputState();
   const multilineInputState = useInputState();
 
+  const [date, setDate] = React.useState(new Date());
+
   const Submission = () => {
-    //   console.log(titleInputState.value, displayValue);
     fetch('http://101.35.20.193:8088/need/add', {
     method: 'PUT',
     headers: {
@@ -58,20 +63,15 @@ export const Submit = ({ navigation }) => {
     },
     body: JSON.stringify({
         description: titleInputState.value,
-        category: displayValue
+        category: displayValue,
+        tel: "123321",
+        timeLimit: date
     })
     })
     .then(response => {
-        console.log(response);
+      navigation.goBack();
+      DeviceEventEmitter.emit("EventType");
       })
-    // fetch('http://101.35.20.193:8088/need/add', {
-    // method: 'PUT',
-    // headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded'
-    // },
-    // body: `description=${titleInputState.value}&category=${displayValue}`
-    // })
-    
   }
   
   return (
@@ -105,6 +105,14 @@ export const Submit = ({ navigation }) => {
                 style={{margin:2, textAlignVertical: 'top'}}
                 placeholder={'Describe your needs here,' + String.fromCharCode(10) + 'like what you need,' + String.fromCharCode(10) + 'your address,'  + String.fromCharCode(10) + 'and your contact information.'}
                 {...multilineInputState}
+            />
+            <Datepicker
+              style={{margin: 2}}
+              label='Expire date'
+              placeholder='Pick Date'
+              date={date}
+              onSelect={nextDate => setDate(nextDate)}
+              accessoryRight={CalendarIcon}
             />
         </SafeAreaView>
     </Layout>
