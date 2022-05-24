@@ -1,23 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Text, StyleSheet, TextInput, View, TouchableOpacity, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, View, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { Layout } from '@ui-kitten/components';
+import { Layout, Autocomplete, AutocompleteItem, Button, Text, Divider, useTheme, useStyleSheet, StyleService } from '@ui-kitten/components';
+import { countryData } from './countries';
+
+const filter = (item, query) => item.title.toLowerCase().includes(query.toLowerCase());
 
 export default function Home() {
+    const theme = useTheme();
     const [countryImg, setCountryImg] = useState();
-    const [data, setData] = useState();
+    const [caseStats, setCaseStats] = useState();
     const [search, setSearch] = useState('');
     const [stats, setStats] = useState({});
     const [Country, SetCountry] = useState('Global');
 
+    const [value, setValue] = React.useState(null);
+    const [data, setData] = React.useState(countryData);
+
+    const onSelect = (index) => {
+        console.log(index);
+        setSearch(data[index].title);
+        setValue(data[index].title);
+      };
+
+    const onChangeText = (query) => {
+        console.log(query);
+        setValue(query);
+        setSearch(query);
+        setData(countryData.filter(item => filter(item, query)));
+      };
+    
+    const renderOption = (item, index) => (
+        <AutocompleteItem
+          key={index}
+          title={item.title}
+        />
+      );
+
     useEffect(() => {
-        fetchData()
+        fetchData();
     }, []);
 
     async function fetchData() {
         let getData = await fetch('https://api.covid19api.com/summary');
         let res = await getData.json();
-        setData(res);
+        setCaseStats(res);
         setStats({
             ActiveCases: res.Global.TotalConfirmed,
             NewCases: res.Global.NewConfirmed,
@@ -28,10 +55,10 @@ export default function Home() {
     }
 
     function showResults() {
-        data.Countries.map((item, index)=> {
+        console.log(search);
+        caseStats.Countries.map((item, index)=> {
             const {Country, CountryCode} = item;
-            let lowCountry = Country.toLowerCase();
-            if(search === lowCountry) {
+            if(search === Country) {
                 setStats({
                     ActiveCases: item.TotalConfirmed,
                     NewCases: item.NewConfirmed,
@@ -48,21 +75,22 @@ export default function Home() {
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <Layout style={styles.container}>
+            <Layout style={styles.container} level='2'>
                 <View style={styles.searchContainer}>
-                    <TextInput 
+                    <Autocomplete
                     style={styles.input} 
-                    placeholder='search country'
-                    placeholderTextColor='lightgrey'
-                    onChangeText={(text) => {
-                        let tt = text;
-                        tt = tt.toLowerCase();
-                        setSearch(tt);
-                    }}
-                    />
-                    <TouchableOpacity style={styles.searchButton} onPress={() => showResults()} >
-                        <Icon name='search' color='white' size={30} />
-                    </TouchableOpacity>
+                    size={'large'}
+                    placeholder='Search country'
+                    value={value}
+                    onSelect={onSelect}
+                    onChangeText={
+                        onChangeText
+                        }>
+                    {data.map(renderOption)}
+                    </Autocomplete>
+                    <Button style={styles.searchButton} onPress={() => showResults()}>
+                        <Icon name='search' color='white' size={50} />
+                    </Button>
                 </View>
 
                 <View style={styles.headingContainer}>
@@ -73,10 +101,10 @@ export default function Home() {
                     <Image style={styles.headingImage} source={require('../assets/1.jpg')} />
                 </View>
 
-                <View style={styles.divider}></View>
+                <Divider style={{marginTop: 15}} />
 
                 <View>
-                    <View style={styles.countryHeading}>
+                    <View style={[{backgroundColor: theme['color-basic-transparent-300']}, styles.countryHeading]}>
                         <Image style={{width: 20, height: 20, marginRight: 10, borderRadius: 5}}
                         source={Country === 'Global' ? null : { uri: `https://countryflagsapi.com/png/${countryImg}`}}
                         />
@@ -84,22 +112,22 @@ export default function Home() {
                     </View>
 
                     <View style={styles.cards}>
-                        <View style={[styles.card, {borderLeftColor: 'yellow'}]}>
+                        <View style={[styles.card, {borderLeftColor: 'yellow', backgroundColor: theme['color-basic-transparent-300']}]}>
                             <Text style={styles.cardText}>Active Cases</Text>
                             <Text style={[styles.text, {color: 'yellow'}]}>{stats.ActiveCases}</Text>
                         </View>
 
-                        <View style={[styles.card, {borderLeftColor: 'orange'}]}>
+                        <View style={[styles.card, {borderLeftColor: 'orange', backgroundColor: theme['color-basic-transparent-300']}]}>
                             <Text style={styles.cardText}>New Cases</Text>
                             <Text style={[styles.text, {color: 'orange'}]}>{stats.NewCases}</Text>
                         </View>
 
-                        <View style={[styles.card, {borderLeftColor: 'red'}]}>
+                        <View style={[styles.card, {borderLeftColor: 'red', backgroundColor: theme['color-basic-transparent-300']}]}>
                             <Text style={styles.cardText}>Deaths</Text>
                             <Text style={[styles.text, {color: 'red'}]}>{stats.Deaths}</Text>
                         </View>
 
-                        <View style={[styles.card, {borderLeftColor: 'lightgreen'}]}>
+                        <View style={[styles.card, {borderLeftColor: 'lightgreen', backgroundColor: theme['color-basic-transparent-300']}]}>
                             <Text style={styles.cardText}>Recovered</Text>
                             <Text style={[styles.text, {color: 'lightgreen'}]}>{stats.Recovered}</Text>
                         </View>
@@ -113,28 +141,27 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#2F3A64',
+        // backgroundColor: '#2F3A64',
         padding: 15,
     },
     searchContainer: {
         flexDirection: 'row',
+        justifyContent: 'space-around',
         marginTop: 10,
     },
     input: {
-        backgroundColor: '#3E4F7A',
         height: 50,
         borderRadius: 15,
-        paddingLeft: 20,
         fontSize: 18,
-        width: '80%',
+        minWidth: '80%',
+        minHeight: '100%',
         marginRight: 10,
         color: 'lightgrey',
     },
     searchButton: {
-        backgroundColor: '#3E4F7A',
         borderRadius: 15,
-        width: 60,
         padding: 10,
+        height: 48,
         alignItems: 'center',
     },
     headingContainer: {
@@ -143,7 +170,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     headingText: {
-        color: 'white',
         fontSize: 35,
         fontWeight: '700',
     },
@@ -152,14 +178,7 @@ const styles = StyleSheet.create({
         height: 90,
         borderRadius: 15,
     },
-    divider: {
-        width: '100%',
-        backgroundColor: '#3E4F7A',
-        height: 3,
-        marginTop: 15
-    },
     countryHeading: {
-        backgroundColor: '#3E4F7A',
         marginTop: 10,
         alignItems: 'center',
         height: 40,
@@ -169,7 +188,6 @@ const styles = StyleSheet.create({
     },
     countryName: {
         fontSize: 25,
-        color: 'white',
         fontWeight: '700',
     },
     cards: {
@@ -179,7 +197,7 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     card: {
-        backgroundColor: '#3E4F7A',
+        backgroundColor: '#6690FF',
         width: 170,
         height: 100,
         borderRadius: 15,
@@ -189,7 +207,6 @@ const styles = StyleSheet.create({
         borderLeftColor: 'white',
     },
     cardText: {
-        color: 'white',
         fontSize: 20,
         fontWeight: '600',
     },

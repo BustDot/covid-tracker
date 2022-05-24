@@ -40,7 +40,7 @@ export default function Help({ navigation }) {
   );
 
   return (
-    <Layout style={styles.container}>
+    <Layout style={styles.container} level='2'>
       <TopNavigation
         alignment='center'
         title='Help'
