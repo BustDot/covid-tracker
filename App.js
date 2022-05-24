@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
+import {useColorScheme} from 'react-native';
 import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from './components/Home';
@@ -47,10 +48,17 @@ const TabNavigator = () => (
 
 
 export default function App() {
+    const isDarkMode = useColorScheme() === 'dark';
+    let judgeTheme;
+    if(isDarkMode)
+      judgeTheme = { ...eva.dark, ...theme };
+    else
+      judgeTheme = { ...eva.light, ...theme };
+
     return (
     <>
       <IconRegistry icons={EvaIconsPack} />
-      <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
+      <ApplicationProvider {...eva} theme={judgeTheme}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="TabNavigator" screenOptions={{headerShown: false}}>
             <Stack.Screen name="TabNavigator" component={TabNavigator} />
