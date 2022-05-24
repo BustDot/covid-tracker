@@ -62,7 +62,8 @@ export const Submit = ({ navigation }) => {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-        description: titleInputState.value,
+        title: titleInputState.value,
+        description: multilineInputState.value,
         category: displayValue,
         tel: "123321",
         timeLimit: date
