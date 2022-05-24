@@ -168,6 +168,7 @@ export const Detail = ({ navigation, route }) => {
             console.log(response);
         })
     }
+    fetchData();
   };
    
   const renderItemAccessory = (inputComment) => {
@@ -206,7 +207,7 @@ export const Detail = ({ navigation, route }) => {
                 <Input
                     textStyle={{minHeight: 150}}
                     style={style.commentInput}
-                    placeholder='Write your comment'
+                    placeholder=''
                     value={inputComment}
                     onChangeText={setInputComment}
                     accessoryRight={() => renderItemAccessory(inputComment)}
