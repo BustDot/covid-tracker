@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableWithoutFeedback } from 'react-native';
+import { View, TouchableWithoutFeedback, Alert } from 'react-native';
 import { TopNavigationAction, Divider, TopNavigation, Tooltip, Button, Input, Layout, StyleService, Text, useStyleSheet, Icon } from '@ui-kitten/components';
 import  {DeviceEventEmitter} from 'react-native';
 import '../user';
@@ -42,15 +42,18 @@ export default function SignIn ({ navigation }) {
           if (res.ok) {
             res.json().then(data => {
               global.user = data.user;
+              console.log(global.user);
               global.isLogin = true;
+              navigation && navigation.goBack();
+              DeviceEventEmitter.emit('EventType');
             });
             // navigation && navigation.reset();
             // navigation && navigation.navigate('Login');
-            navigation && navigation.goBack();
+            
             // navigation && navigation.navigate('TabNavigator');
-            DeviceEventEmitter.emit('EventType');
+            
           } else {
-            // console.log(res.status);
+            
           }
         })
         .catch(res => console.log("status: " + res.status));

@@ -71,7 +71,7 @@ export const Submit = ({ navigation }) => {
     })
     .then(response => {
       navigation.goBack();
-      DeviceEventEmitter.emit("EventType");
+      DeviceEventEmitter.emit("refresh");
       })
   }
   

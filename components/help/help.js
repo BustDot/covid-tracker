@@ -13,7 +13,7 @@ export default function Help({ navigation }) {
   const [data, setData] = useState();
   useEffect(() => {
       fetchData();
-     DeviceEventEmitter.addListener("EventType", ()=>{
+     DeviceEventEmitter.addListener("refresh", ()=>{
         fetchData();
     });
   }, []);

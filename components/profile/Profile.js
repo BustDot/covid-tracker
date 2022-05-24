@@ -17,32 +17,47 @@ import {
 } from '@ui-kitten/components';
 import '../user';
 
+const visitor = {
+  userId: 'iamavisitor',
+  userName: 'visitor',
+  userSex: '-',
+  userTel: '-',
+  userEmail: '-',
+}
+
 export default function Profile({navigation}) {
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState({});
+  const [isLogin, setisLogin] = useState(false);
+
   useEffect(() => {
     readUser();
     DeviceEventEmitter.addListener("EventType", ()=>{
         readUser();
+        console.log(userData, global.user);
       });
-  }, [global.isLogin])
+  }, [])
 
   function readUser() {
-      if (global.isLogin === true) {
-          setUserData(userData);
-      } else {
-          setUserData(global.visitor);
-      }
+    if(!global.isLogin) {
+      setUserData(global.user);
+      setisLogin(false);
+    }
+    else {
+      setUserData(global.user);
+      setisLogin(true);
+    }
   }
 
-  const listItem = [
-    {title: 'id', description: global.user.userId},
-    {title: 'username', description: global.user.userName},
-    {title: 'gender', description: global.user.userSex},
-    {title: 'telephone', description: global.user.userTel},
-    {title: 'email', description: global.user.userEmail},
+  let listItem = [
+    {title: 'id', description: userData.userId},
+    {title: 'username', description: userData.userName},
+    {title: 'gender', description: userData.userSex},
+    {title: 'telephone', description: userData.userTel},
+    {title: 'email', description: userData.userEmail},
   ];
 
   const quit = () => {
+    global.user = visitor;
     global.isLogin = false;
     readUser();
     navigation && navigation.navigate('SignIn');
@@ -71,7 +86,7 @@ export default function Profile({navigation}) {
         style={{marginLeft: 5, marginRight: 5}}
       />
       <Button size="giant" onPress={() => quit()}>
-        QUIT
+        {isLogin ? 'QUIT' : 'LOGIN'}
       </Button>
     </Layout>
   );

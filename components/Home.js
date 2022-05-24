@@ -98,7 +98,7 @@ export default function Home() {
                         <Text style={styles.headingText}>Stay Home</Text>
                         <Text style={styles.headingText}>Stay Safe</Text>
                     </View>
-                    <Image style={styles.headingImage} source={require('../assets/1.jpg')} />
+                    <Image style={styles.headingImage} source={require('../assets/2.png')} />
                 </View>
 
                 <Divider style={{marginTop: 15}} />

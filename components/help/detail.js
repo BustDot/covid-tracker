@@ -204,7 +204,7 @@ export const Detail = ({ navigation, route }) => {
                 </View>
                 <Text style={style.commentText} category='h4'>Comments</Text>
                 <Input
-                    textStyle={{minHeight: 420}}
+                    textStyle={{minHeight: 150}}
                     style={style.commentInput}
                     placeholder='Write your comment'
                     value={inputComment}
