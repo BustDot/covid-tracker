@@ -14,6 +14,7 @@ import {ApplicationProvider} from '@ui-kitten/components';
 import { BottomNavigation, BottomNavigationTab, IconRegistry, Icon } from '@ui-kitten/components';
 import { default as theme } from './theme.json';
 import { Submit } from './components/help/submit';
+import { Detail } from './components/help/detail';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import './components/user';
 
@@ -73,6 +74,7 @@ export default function App() {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Help" component={Help} />
             <Stack.Screen name="Submit" component={Submit} />
+            <Stack.Screen name="Detail" component={Detail} />
             <Stack.Screen name="Login" component={Profile} />
             <Stack.Screen name="SignIn" component={SignIn} />
             <Stack.Screen name="SignUp" component={SignUp} />
