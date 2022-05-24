@@ -128,7 +128,7 @@ export default function SignIn({navigation}) {
   const renderOption = title => <SelectItem title={title} />;
 
   return (
-    <Layout style={styles.container}>
+    <Layout style={styles.container} level='2'>
       <TopNavigation
         alignment="center"
         title="Sign Up A New Account"
@@ -220,6 +220,7 @@ export default function SignIn({navigation}) {
 const themedStyles = StyleService.create({
   container: {
     backgroundColor: 'background-basic-color-1',
+    flex: 1,
   },
   headerContainer: {
     justifyContent: 'center',

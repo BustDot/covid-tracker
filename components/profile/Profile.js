@@ -59,7 +59,7 @@ export default function Profile({navigation}) {
   );
 
   return (
-    <Layout style={styles.container}>
+    <Layout style={styles.container} level='2'>
       <Layout style={styles.avatarContainer}>
         <Image style={styles.avatar} source={require('../../assets/1.jpg')} />
       </Layout>

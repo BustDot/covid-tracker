@@ -73,7 +73,7 @@ export default function SignIn ({ navigation }) {
   );
 
   return (
-    <Layout style={styles.container}>
+    <Layout style={styles.container} level='2'>
       <TopNavigation
         alignment='center'
         title='Sign In'
@@ -117,7 +117,7 @@ export default function SignIn ({ navigation }) {
       <Layout style={styles.buttonContainer}>
         <Button
             style={styles.signInButton}
-            size='giant'
+            size='large'
             onPress={onSignInButtonPress}>
             SIGN IN
         </Button>
@@ -136,6 +136,7 @@ export default function SignIn ({ navigation }) {
 const themedStyles = StyleService.create({
   container: {
     backgroundColor: 'background-basic-color-1',
+    flex: 1,
   },
   headerContainer: {
     justifyContent: 'center',

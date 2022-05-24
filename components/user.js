@@ -1,9 +1,9 @@
 const visitor = {
     userId: 'iamavisitor',
     userName: 'visitor',
-    userSex: '-',
-    userTel: '-',
-    userEmail: '-',
+    userSex: 'Male',
+    userTel: '11451400514',
+    userEmail: '11451400514@mail.buct.edu.cn',
   }
 
 global.user = visitor;

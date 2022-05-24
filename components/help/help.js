@@ -148,7 +148,7 @@ const renderItem = ({item}) => {
         // description={item.description}
         // accessoryRight={() => renderItemAccessory(item)}
         onPress={() => navigateDetail(item)}>
-        <Text style={{fontWeight: 'bold', fontSize: 30, textAlign:'left'}}>Title</Text>
+        <Text style={{fontWeight: 'bold', fontSize: 30, textAlign:'left'}}>{item.title}</Text>
         <Text>{item.description}</Text>
         <Button size='giant'style={{marginTop: 180, marginLeft:300}} onPress={() => navigateDetail(item)} appearance='ghost' accessoryLeft={StarIcon}></Button>
       </ImageOverlay>)
