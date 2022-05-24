@@ -22,7 +22,7 @@ export default function Emergency() {
                     <Text style={style.cardText}>CDC in Action</Text>
                     <Icon name='chevron-forward' color='white' size={35} onPress={() => {
                         Linking
-                        .openURL('https://www.zhihu.com/')
+                        .openURL('https://www.chinacdc.cn/')
                         .catch(err => console.error("Error", err))
                     }}/>
                 </View>
@@ -31,7 +31,7 @@ export default function Emergency() {
                     <Text style={style.cardText}>Communication Resource</Text>
                     <Icon name='chevron-forward' color='white' size={35} onPress={() => {
                         Linking
-                        .openURL('https://www.zhihu.com/')
+                        .openURL('http://publichealth.lacounty.gov/')
                         .catch(err => console.error("Error", err))
                     }}/>
                 </View>
@@ -40,7 +40,7 @@ export default function Emergency() {
                     <Text style={style.cardText}>Global COVID-19</Text>
                     <Icon name='chevron-forward' color='white' size={35} onPress={() => {
                         Linking
-                        .openURL('https://www.zhihu.com/')
+                        .openURL('https://covid19.who.int/')
                         .catch(err => console.error("Error", err))
                     }}/>
                 </View>
@@ -49,7 +49,7 @@ export default function Emergency() {
                     <Text style={style.cardText}>Guidance for COVID-19</Text>
                     <Icon name='chevron-forward' color='white' size={35} onPress={() => {
                         Linking
-                        .openURL('https://www.zhihu.com/')
+                        .openURL('https://www.cdc.gov/coronavirus/2019-ncov/index.html')
                         .catch(err => console.error("Error", err))
                     }}/>
                 </View>

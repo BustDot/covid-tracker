@@ -55,6 +55,7 @@ export const Submit = ({ navigation }) => {
   const [date, setDate] = React.useState(new Date());
 
   const Submission = () => {
+    console.log(global.user);
     fetch('http://101.35.20.193:8088/need/add', {
     method: 'PUT',
     headers: {
@@ -65,7 +66,7 @@ export const Submit = ({ navigation }) => {
         title: titleInputState.value,
         description: multilineInputState.value,
         category: displayValue,
-        tel: "123321",
+        tel: global.user.userTel,
         timeLimit: date
     })
     })

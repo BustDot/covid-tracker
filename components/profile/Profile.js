@@ -49,11 +49,11 @@ export default function Profile({navigation}) {
   }
 
   let listItem = [
-    {title: 'id', description: userData.userId},
-    {title: 'username', description: userData.userName},
-    {title: 'gender', description: userData.userSex},
-    {title: 'telephone', description: userData.userTel},
-    {title: 'email', description: userData.userEmail},
+    // {title: 'id', description: userData.userId},
+    {title: 'Username', description: userData.userName},
+    {title: 'Gender', description: userData.userSex},
+    {title: 'Phone Number', description: userData.userTel},
+    {title: 'Email', description: userData.userEmail},
   ];
 
   const quit = () => {

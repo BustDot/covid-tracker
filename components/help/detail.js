@@ -16,6 +16,7 @@ const DATA = new Array(8).fill({
 
 export const Detail = ({ navigation, route }) => {
   const {item} = route.params;
+  item.timeLimit = item.timeLimit.slice(0, 10) +' '+item.timeLimit.slice(11, 16);
   if(item.category =='Medicine') {
     let rand = parseInt(item.needId/100)%10;
     if(rand == 0)   imagePath = require('./extra/Medicine0.jpg');
@@ -195,12 +196,13 @@ export const Detail = ({ navigation, route }) => {
         <Divider/>
             <ScrollView>
             {/* <Text style={style.titleLabel} category='h4'>{item.title}</Text> */}
-            <Text style={style.titleLabel} category='h2'>Title</Text>
+            <Text style={style.titleLabel} category='h2'>{item.title}</Text>
                 <Text style={style.descriptionLabel} category='h4'>{item.category}</Text>
                 <Text style={style.contentLabel} category='s1'>{item.description}</Text>
                 <ImageBackground style={style.image} source={imagePath}/>
                 <View style={style.authoringContainer}>
                     <Text category='p2' appearance='hint'>{item.tel}</Text>
+                    <Text category='p2' appearance='hint'>   </Text>
                     <Text category='p2' appearance='hint'>{item.timeLimit}</Text>
                 </View>
                 <Text style={style.commentText} category='h4'>Comments</Text>
