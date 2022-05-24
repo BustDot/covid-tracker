@@ -1,12 +1,10 @@
-global.visitor = {
-    "user_id":"iamavisitor",
-    "user_name":"visitor",
-    "user_password":"",
-    "user_sex":"-",
-    "user_tel":"-",
-    "user_email":"-",
-};
-
+const visitor = {
+    userId: 'iamavisitor',
+    userName: 'visitor',
+    userSex: '-',
+    userTel: '-',
+    userEmail: '-',
+  }
 
 global.user = visitor;
 global.isLogin = false;

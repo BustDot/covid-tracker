@@ -1,57 +1,89 @@
 import React, { useState, useEffect } from 'react';
-import { Image, StyleSheet, ScrollView, DeviceEventEmitter, TouchableWithoutFeedbac } from 'react-native';
-import { Avatar, Text, Icon, TopNavigation, TopNavigationAction, Layout, Divider, List, ListItem, Button, StyleService, useStyleSheet } from '@ui-kitten/components';
-import '../user.js';
+import {
+  Alert,
+  Image,
+  StyleSheet,
+  ScrollView,
+  DeviceEventEmitter,
+  TouchableWithoutFeedback,
+} from 'react-native';
+import {
+  Avatar,
+  Text,
+  Icon,
+  TopNavigation,
+  TopNavigationAction,
+  Layout,
+  Divider,
+  List,
+  ListItem,
+  Button,
+  StyleService,
+  useStyleSheet,
+  ApplicationProvider,
+} from '@ui-kitten/components';
+import AsyncStorage from '@react-native-community/async-storage';
+import '../user';
 
-export default function Profile({ navigation, route }) {
+export default function Profile({navigation}) {
+  const [userData, setUserData] = useState();
+  useEffect(() => {
+    readUser();
+    DeviceEventEmitter.addListener("EventType", ()=>{
+        readUser();
+      });
+  }, [global.isLogin])
+
+  function readUser() {
+      if (global.isLogin === true) {
+          setUserData(userData);
+      } else {
+          setUserData(global.visitor);
+      }
+  }
+
+  const listItem = [
+    {title: 'id', description: global.user.userId},
+    {title: 'username', description: global.user.userName},
+    {title: 'gender', description: global.user.userSex},
+    {title: 'telephone', description: global.user.userTel},
+    {title: 'email', description: global.user.userEmail},
+  ];
+
   const quit = () => {
-    isLogin = false;
-    user = visitor;
+    global.isLogin = false;
+    readUser();
     navigation && navigation.navigate('SignIn');
-  }
+  };
 
-  const returnText = (text) => {
-    return (<Text>{text}</Text>)
-  }
+  const returnText = text => <Text>{text}</Text>;
 
   const renderItem = ({item}) => (
-    <ListItem style={styles.listItem}
-      accessoryLeft={()=>returnText(item.title)}
-      accessoryRight={()=>returnText(item.description)}
+    <ListItem
+      style={styles.listItem}
+      accessoryLeft={() => returnText(item.title)}
+      accessoryRight={() => returnText(item.description)}
     />
   );
 
-  const listItem = [
-    {title: "id", description: user.user_id},
-    {title: "username", description:user.user_name},
-    {title: "gender", description: user.user_sex},
-    {title: "telephone", description: user.user_tel},
-    {title: "email", description: user.user_email},
-  ];
-  
   return (
     <Layout style={styles.container}>
       <Layout style={styles.avatarContainer}>
-        <Image
-          style={styles.avatar}
-          source={require('../../assets/1.jpg')}
-        />
+        <Image style={styles.avatar} source={require('../../assets/1.jpg')} />
       </Layout>
-      <Divider/>
+      <Divider />
       <List
         data={listItem}
         ItemSeparatorComponent={Divider}
         renderItem={renderItem}
-        style={{marginLeft: 5, marginRight:5}}
+        style={{marginLeft: 5, marginRight: 5}}
       />
-      <Button
-        size='giant'
-        onPress={() => quit()}>
-          QUIT
+      <Button size="giant" onPress={() => quit()}>
+        QUIT
       </Button>
     </Layout>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -61,7 +93,7 @@ const styles = StyleSheet.create({
   listItem: {
     height: 64,
   },
-  
+
   avatarContainer: {
     alignItems: 'center',
     padding: 49,
@@ -71,6 +103,5 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    
-  }
+  },
 });

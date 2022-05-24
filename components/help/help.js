@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { Icon, TopNavigation, TopNavigationAction, Layout, Divider, List, ListItem } from '@ui-kitten/components';
 import  {DeviceEventEmitter} from 'react-native';
-import '../user.js';
+import '../user';
 
 export default function Help({ navigation }) {
   const [data, setData] = useState();
@@ -20,7 +20,7 @@ export default function Help({ navigation }) {
   }
 
   const navigateSubmit = () => {
-    if (isLogin)
+    if (global.isLogin===true)
       navigation.navigate('Submit');
     else
       navigation.navigate('SignIn');

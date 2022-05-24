@@ -1,45 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
-import { Datepicker, TopNavigationAction, Divider, TopNavigation, Tooltip, Button, Input, Layout, StyleService, Text, useStyleSheet, Icon } from '@ui-kitten/components';
-import { DeviceEventEmitter} from 'react-native';
-import '../user.js';
+import {
+  Select,
+  SelectItem,
+  TopNavigationAction,
+  Divider,
+  TopNavigation,
+  Tooltip,
+  Button,
+  Input,
+  Layout,
+  StyleService,
+  Text,
+  useStyleSheet,
+  Icon,
+} from '@ui-kitten/components';
+import {DeviceEventEmitter} from 'react-native';
+import '../user';
 
-export default function SignIn ({ navigation }) {
+export default function SignIn({navigation}) {
   const [username, setUsername] = useState();
-  const [userID, setUserID] = useState();
+  const [code, setCode] = useState();
   const [password, setPassword] = useState();
   const [email, setEmail] = useState();
   const [tel, setTel] = useState();
-  const [dob,setDob] = useState();
+  const [gender, setGender] = useState();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [users, setUsers] = useState();
 
   const styles = useStyleSheet(themedStyles);
 
-  useEffect(() => {
-    fetchData();
-    DeviceEventEmitter.addListener("EventType", () => {
-      fetchData();
-    });
-  }, []);
-
-  async function fetchData() {
-    let getData = await fetch('http://101.35.20.193:8088/login');
-    let res = await getData.json();
-    setUsers(res);
-  }
-
-  const PersonIcon = (props) => ( <Icon {...props} name='person'/> );
-  const IDIcon = (props) => ( <Icon {...props} name='archive'/> );
-  const TelIcon = (props) => ( <Icon {...props} name='phone'/> );
-  const EmailIcon = (props) => ( <Icon {...props} name='email'/> );
-  const DobIcon = (props) => ( <Icon {...props} name='calendar'/> )
+  const PersonIcon = props => <Icon {...props} name="person" />;
+  const CodeIcon = props => <Icon {...props} name="archive" />;
+  const TelIcon = props => <Icon {...props} name="phone" />;
+  const EmailIcon = props => <Icon {...props} name="email" />;
+  const GenderIcon = props => <Icon {...props} name="heart" />;
 
   const onPasswordIconPress = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const PasswordIcon = (props) => (
+  const PasswordIcon = props => (
     <TouchableWithoutFeedback onPress={onPasswordIconPress}>
       <Icon {...props} name={passwordVisible ? 'eye-off' : 'eye'} />
     </TouchableWithoutFeedback>
@@ -47,109 +47,175 @@ export default function SignIn ({ navigation }) {
 
   const onSignInButtonPress = () => {
     navigation && navigation.navigate('SignIn');
-  }
-  
-  const onSignUpButtonPress = () => {
-    navigation && navigation.navigate('SignUp');
   };
 
-  const HomeIcon = (props) => (
-    <Icon {...props} onPress={() => {
-      navigation.navigate("TabNavigator");
-    }} name='home'/>
+  const onVerifyButtonPress = () => {
+    fetch('http://101.35.20.193:8088/sendCode', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "to": email,
+        }),
+      })
+        .then(res => {
+          if (res.ok) {
+            res.json().then(data => console.log(data));
+            DeviceEventEmitter.emit('EventType');
+          } else {
+            console.log(res.status);
+          }
+        })
+        .catch(res => console.log(res.status));
+  }
+
+  const onSignUpButtonPress = () => {
+    if (
+      code?.length > 0 &&
+      username?.length > 0 &&
+      password?.length > 0 &&
+      email?.length > 0 &&
+      tel?.length > 0 &&
+      gender in [1, 2, 3]
+    ) {
+      fetch('http://101.35.20.193:8088/registry', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userEmail: email,
+          userName: username,
+          userPassword: password,
+          userSex: genderData[gender - 1],
+          userTel: tel,
+          verifyCode: code,
+        }),
+      })
+        .then(res => {
+            if (res.ok) {
+            res.json().then(data => console.log(data));
+            navigation && navigation.navigate('SignIn');
+            DeviceEventEmitter.emit('EventType');
+            } else {
+            console.log(res.status);
+            }
+        })
+        .catch(res => console.log(res.status));
+    }
+  };
+
+  const HomeIcon = props => (
+    <Icon
+      {...props}
+      onPress={() => {
+        navigation.navigate('TabNavigator');
+      }}
+      name="home"
+    />
   );
 
   const returnToHome = () => (
     <React.Fragment>
-        <TopNavigationAction icon={HomeIcon}/>
+      <TopNavigationAction icon={HomeIcon} />
     </React.Fragment>
   );
+
+  const genderData = ['Male', 'Female', 'Others'];
+  const renderOption = title => <SelectItem title={title} />;
 
   return (
     <Layout style={styles.container}>
       <TopNavigation
-        alignment='center'
-        title='Sign Up A New Account'
+        alignment="center"
+        title="Sign Up A New Account"
         accessoryLeft={returnToHome}
       />
-      <Divider/>
+      <Divider />
       <Layout style={styles.headerContainer}>
-        <Text
-          category='h1'
-          status='control'>
+        <Text category="h1" status="control">
           Welcome
         </Text>
       </Layout>
-      <Layout
-        style={styles.formContainer}
-        level='1' 
-        >
+      <Layout style={styles.formContainer} level="1">
         <Input
-          placeholder='Username'
+          placeholder="Username"
           accessoryRight={PersonIcon}
           value={username}
           onChangeText={username => setUsername(username)}
           defaultValue={username}
         />
         <Input
-        style={styles.inputMargin}
-          placeholder='User ID'
-          accessoryRight={IDIcon}
-          value={userID}
-          onChangeText={userID => setUserID(userID)}
-          defaultValue={userID}
-        />
-        <Input
           style={styles.inputMargin}
-          placeholder='Password'
+          placeholder="Password"
           accessoryRight={PasswordIcon}
           value={password}
           secureTextEntry={!passwordVisible}
           onChangeText={password => setPassword(password)}
           defaultValue={password}
         />
+        <Layout
+            style={styles.verify}>
+            <Input
+            style={[styles.inputMargin,styles.email]}
+            placeholder="Email Address"
+            accessoryRight={EmailIcon}
+            value={email}
+            onChangeText={email => setEmail(email)}
+            defaultValue={email}
+            />
+            <Button
+                style={styles.verifyButton}
+                onPress={onVerifyButtonPress}
+                children={"Verify"}/>
+        </Layout>
         <Input
           style={styles.inputMargin}
-          placeholder='Email Address'
-          accessoryRight={EmailIcon}
-          value={email}
-          onChangeText={email => setEmail(email)}
-          defaultValue={email}
+          placeholder="Verifying Code"
+          accessoryRight={CodeIcon}
+          value={code}
+          onChangeText={code => setCode(code)}
+          defaultValue={code}
         />
         <Input
           style={styles.inputMargin}
-          placeholder='Telephone Number'
+          placeholder="Telephone Number"
           accessoryRight={TelIcon}
           value={tel}
           onChangeText={tel => setTel(tel)}
           defaultValue={tel}
         />
-        <Datepicker
+        <Select
           style={styles.inputMargin}
-          placeholder='Date of Birth'
-          accessoryRight={DobIcon}
-          date={dob}
-          onSelect={setDob}
-        />
+          selectedIndex={gender}
+          placeholder={'Select Gender'}
+          accessoryRight={GenderIcon}
+          value={genderData[gender - 1]}
+          onSelect={gender => setGender(gender)}>
+          {genderData.map(renderOption)}
+        </Select>
       </Layout>
       <Layout style={styles.buttonContainer}>
         <Button
-            style={styles.signUpButton}
-            size='giant'
-            onPress={onSignUpButtonPress}>
-            SIGN UP
+          style={styles.signUpButton}
+          size="giant"
+          onPress={()=>onSignUpButtonPress()}>
+          SIGN UP
         </Button>
         <Button
-            style={styles.signInButton}
-            appearance='ghost'
-            status='basic'
-            onPress={onSignInButtonPress}>
-            Already got an account? Click here to sign in!
+          style={styles.signInButton}
+          appearance="ghost"
+          status="basic"
+          onPress={onSignInButtonPress}>
+          Already got an account? Click here to sign in!
         </Button>
       </Layout>
     </Layout>
   );
-};
+}
 
 const themedStyles = StyleService.create({
   container: {
@@ -181,7 +247,7 @@ const themedStyles = StyleService.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
-  
+
   inputMargin: {
     marginTop: 16,
   },
@@ -192,7 +258,21 @@ const themedStyles = StyleService.create({
 
   buttonContainer: {
     justifyContent: 'flex-end',
-  }
+  },
+
+  verify: {
+    flexDirection: 'row',
+  },
+
+  verifyButton: {
+    marginLeft: 8,
+    marginTop: 13,
+    height: 45,
+    width: 90,
+  },
+
+  email: {
+    width: 280,
+    
+  },
 });
-
-

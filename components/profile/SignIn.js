@@ -2,39 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { View, TouchableWithoutFeedback } from 'react-native';
 import { TopNavigationAction, Divider, TopNavigation, Tooltip, Button, Input, Layout, StyleService, Text, useStyleSheet, Icon } from '@ui-kitten/components';
 import  {DeviceEventEmitter} from 'react-native';
-import '../user.js';
-
-const testusers = [{
-  "user_id":"admini",
-  "user_name":"admin",
-  "user_password":"123456",
-  "user_sex":"male",
-  "user_tel":"12345678901",
-  "user_email":"admin@ad.com",
-}];
+import AsyncStorage from '@react-native-community/async-storage';
+import '../user';
 
 export default function SignIn ({ navigation }) {
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [users, setUsers] = useState();
   const styles = useStyleSheet(themedStyles);
-  useEffect(() => {
-    fetchData();
-    DeviceEventEmitter.addListener("EventType", ()=>{
-      fetchData();
-    });
-  }, []);
 
-  async function fetchData() {
-    let getData = await fetch('http://101.35.20.193:8088/login');
-    let res = await getData.json();
-    setUsers(res);
-  }
-
-  const PersonIcon = (props) => (
-    <Icon {...props} name='person'/>
-  );
+  const PersonIcon = (props) => ( <Icon {...props} name='person'/> );
 
   const onPasswordIconPress = () => {
     setPasswordVisible(!passwordVisible);
@@ -51,16 +28,33 @@ export default function SignIn ({ navigation }) {
   };
 
   const onSignInButtonPress = () => {
-    for (let i = 0; i < testusers.length; i++) {
-      if (testusers[i].user_name === username && testusers[i].user_password === password) {
-        global.user = testusers[i];
-        global.isLogin = true;
-        navigation && navigation.navigate('Login');
-        // navigation && navigation.goBack();
-        return;
-      }
-    }
-    // 用户不存在，提示错误信息
+    fetch('http://101.35.20.193:8088/login', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "userName": username,
+          "userPassword": password,
+        }),
+      })
+        .then(res => {
+          if (res.ok) {
+            res.json().then(data => {
+              global.user = data.user;
+              global.isLogin = true;
+            });
+            // navigation && navigation.reset();
+            // navigation && navigation.navigate('Login');
+            navigation && navigation.goBack();
+            // navigation && navigation.navigate('TabNavigator');
+            DeviceEventEmitter.emit('EventType');
+          } else {
+            // console.log(res.status);
+          }
+        })
+        .catch(res => console.log("status: " + res.status));
   }
   
   const onSignUpButtonPress = () => {
@@ -120,15 +114,6 @@ export default function SignIn ({ navigation }) {
           onChangeText={password => setPassword(password)}
           defaultValue={password}
         />
-        <View style={styles.forgotPasswordContainer}>
-          <Button
-            style={styles.forgotPasswordButton}
-            appearance='ghost'
-            status='basic'
-            onPress={onForgotPasswordButtonPress}>
-            Forgot your password?
-          </Button>
-        </View>
       </Layout>
       <Layout style={styles.buttonContainer}>
         <Button
@@ -162,7 +147,7 @@ const themedStyles = StyleService.create({
   formContainer: {
     paddingTop: 32,
     paddingHorizontal: 16,
-    paddingBottom: 126,
+    paddingBottom: 170,
   },
   signInLabel: {
     marginTop: 16,
@@ -174,15 +159,8 @@ const themedStyles = StyleService.create({
     marginVertical: 12,
     marginHorizontal: 16,
   },
-  forgotPasswordContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
   passwordInput: {
     marginTop: 16,
-  },
-  forgotPasswordButton: {
-    paddingHorizontal: 0,
   },
   buttonContainer: {
     justifyContent: 'flex-end',
