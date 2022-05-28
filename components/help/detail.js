@@ -162,7 +162,7 @@ export const Detail = ({ navigation, route }) => {
   const addComment = (inputComment) => {
     if(inputComment!=undefined) {
         console.log(inputComment);
-        fetch('http://101.35.20.193:8088/comment/add?commentText='+inputComment+'&userId='+'1528761029134766081'+'&needId='+item.needId, {
+        fetch('http://101.35.20.193:8088/comment/add?commentText='+inputComment+'&userId='+global.user.userId+'&needId='+item.needId, {
         method: 'PUT',
         })
         .then(response => {

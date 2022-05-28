@@ -76,7 +76,7 @@ export default function Profile({navigation}) {
   return (
     <Layout style={styles.container} level='2'>
       <Layout style={styles.avatarContainer}>
-        <Image style={styles.avatar} source={require('../../assets/1.jpg')} />
+        <Image style={styles.avatar} source={global.isLogin? require('../../assets/1.jpg') : require('../../assets/3.png')} />
       </Layout>
       <Divider />
       <List
